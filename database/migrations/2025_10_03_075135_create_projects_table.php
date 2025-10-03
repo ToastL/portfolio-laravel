@@ -16,8 +16,8 @@ return new class extends Migration
             $table->string('name');
             $table->text('description_nl');
             $table->text('description_en');
-            $table->string('image');
-            $table->string('url');
+            $table->string('image')->nullable();
+            $table->string('url')->nullable();
             $table->string('github_url');
             $table->timestamps();
         });
