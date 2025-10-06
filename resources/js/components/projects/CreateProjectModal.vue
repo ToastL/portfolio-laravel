@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { projects } from '@/routes/projects';
+import { projects } from '@/routes';
 import { ref } from 'vue';
 import { useForm } from '@inertiajs/vue3';
 import { Button } from '@/components/ui/button';
@@ -20,7 +20,7 @@ const form = useForm({
 });
 
 const submit = () => {
-    form.post(projects.store().url);
+    form.post(projects().url);
     isOpen.value = false;
 }
 </script>
