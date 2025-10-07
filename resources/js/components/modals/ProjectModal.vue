@@ -14,14 +14,20 @@ const form = useForm({
     name: '',
     description_nl: '',
     description_en: '',
-    image: '',
+    image: null as File | null,
     url: '',
     github_url: '',
 });
 
 const submit = () => {
-    form.post(projects().url);
-    isOpen.value = false;
+    form.post(projects().url, {
+        method: 'put',
+        forceFormData: true,
+        onSuccess: () => {
+            isOpen.value = false;
+            form.reset()
+        },
+    });
 }
 </script>
 
@@ -46,17 +52,19 @@ const submit = () => {
                         </div>
                         <div class="flex flex-col space-y-2">
                             <Label for="description_nl">Description (NL)</Label>
-                            <Textarea id="description_nl" v-model="form.description_nl" placeholder="Project description" class="resize-none" />
+                            <Textarea id="description_nl" v-model="form.description_nl"
+                                placeholder="Project description" class="resize-none" />
                             <InputError :message="form.errors.description_nl" />
                         </div>
                         <div class="flex flex-col space-y-2">
                             <Label for="description_en">Description (EN)</Label>
-                            <Textarea id="description_en" v-model="form.description_en" placeholder="Project description" class="resize-none" />
+                            <Textarea id="description_en" v-model="form.description_en"
+                                placeholder="Project description" class="resize-none" />
                             <InputError :message="form.errors.description_en" />
                         </div>
                         <div class="flex flex-col space-y-2">
                             <Label for="image">Image</Label>
-                            <Input id="image" v-model="form.image" type="file" placeholder="Project image" />
+                            <Input id="image" type="file" accept="image/jpeg,image/png" @change="form.image = $event.target.files[0]" />
                             <InputError :message="form.errors.image" />
                         </div>
                         <div class="flex flex-col space-y-2">
@@ -72,7 +80,7 @@ const submit = () => {
                         </div>
                     </div>
 
-                    <Button type="submit">Submit</Button>
+                    <Button type="submit" :disabled="form.processing">Submit</Button>
                 </form>
             </DialogHeader>
         </DialogContent>

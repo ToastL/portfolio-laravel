@@ -1,12 +1,22 @@
 <script setup lang="ts">
+import { router } from '@inertiajs/vue3';
+import { cn } from '@/lib/utils';
+
 interface Column {
     key: string;
     label: string;
     sortable?: boolean;
 }
 
+interface Action {
+    key: string;
+    label: string;
+}
+
 const props = defineProps<{
+    route: string;
     columns: Column[];
+    actions?: Action[];
     data: Record<string, any>[];
     sortBy?: string;
     sortDirection?: 'asc' | 'desc';
@@ -18,6 +28,14 @@ const emit = defineEmits<{
 
 const handleSort = (column: string) => {
     emit('sort', column);
+}
+
+const handleAction = (action: string, id: string) => {
+    switch (action) {
+        case 'delete':
+            router.delete(props.route + '/' + id + '/delete');
+            break;
+    }
 }
 </script>
 
@@ -54,6 +72,23 @@ const handleSort = (column: string) => {
                     >
                         <slot :name="`cell-${column.key}`" :value="row[column.key]" :row="row" :index="index">
                             {{ row[column.key] }}
+                        </slot>
+                    </td>
+                    <td
+                        v-for="action in actions"
+                        :key="action.key"
+                        class="first:rounded-l-lg last:rounded-r-lg px-4 py-2 text-sm truncate"
+                    >
+                        <slot :name="`action-${row.id}`" :row="row" :index="index">
+                            <button 
+                                @click="handleAction(action.key, row.id)"
+                                :class="cn(
+                                    'text-muted-foreground hover:text-foreground px-3 cursor-pointer',
+                                    action.key === 'delete' && 'text-destructive'
+                                )"
+                            >
+                                {{ action.label }}
+                            </button>
                         </slot>
                     </td>
                 </tr>
