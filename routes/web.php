@@ -42,10 +42,16 @@ Route::get('tools', function () {
 })->middleware(['auth','verified'])->name('tools');
 
 Route::post('tools', function (Request $request) {
-    Tool::create($request->validate([
+    $validated = $request->validate([
         'name' => 'required|string|max:255',
         'image' => 'nullable|mimetypes:image/svg+xml|max:2048',
-    ]));
+    ]);
+
+    if ($request->hasFile('image')) {
+        $validated['image'] = $request->file('image')->store('tools', config('filesystems.default'));
+    }
+
+    Tool::create($validated);
 
     return Inertia::render('Tools', [ 'tools' => Tool::all() ]);
 })->middleware(['auth','verified'])->name('tools.store');
