@@ -4,7 +4,7 @@ import vue from '@vitejs/plugin-vue';
 import laravel from 'laravel-vite-plugin';
 import { defineConfig } from 'vite';
 
-export default defineConfig(({ mode }) => ({
+export default defineConfig({
     plugins: [
         laravel({
             input: ['resources/js/app.ts'],
@@ -12,9 +12,9 @@ export default defineConfig(({ mode }) => ({
             refresh: true,
         }),
         tailwindcss(),
-        ...(mode === 'development' ? [wayfinder({
+        wayfinder({
             formVariants: true,
-        })] : []),
+        }),
         vue({
             template: {
                 transformAssetUrls: {
@@ -24,4 +24,4 @@ export default defineConfig(({ mode }) => ({
             },
         }),
     ],
-}));
+});
