@@ -30,6 +30,8 @@ class ProjectController extends Controller
             $validated['image'] = $request->file('image')->store('tools', config('filesystems.default'));
         }
 
+        Project::create($validated);
+
         return redirect()->route('projects');
     }
 
